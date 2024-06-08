@@ -17,7 +17,11 @@ defineProps({
       <div class="status-wrapper">
         <span
           :class="
-            status === 'Dead' ? 'card-point card-point-danger' : 'card-point'
+            status === 'Dead'
+              ? 'card-point card-point-danger'
+              : status === 'unknown'
+              ? 'card-point card-point-gray'
+              : 'card-point'
           "
         ></span
         ><span>{{ status }} - {{ species }}</span>
@@ -59,6 +63,9 @@ defineProps({
 }
 .card-point-danger {
   background-color: rgb(255, 60, 0);
+}
+.card-point-gray {
+  background-color: #ccc;
 }
 .status-wrapper {
   display: flex;
