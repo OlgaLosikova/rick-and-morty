@@ -5,11 +5,12 @@ defineProps({
   setPrevPage: Function,
   disabledNext: Boolean,
   disabledPrev: Boolean,
+  empty:Boolean,
 });
 </script>
 
 <template>
-  <footer class="footer">
+  <footer v-show="!empty" class="footer">
     <button @click="setPrevPage" :disabled="disabledPrev">Prev</button
     ><span class="current-page">{{ pageNumber }}</span>
     <button @click="setNextPage" :disabled="disabledNext">Next</button>

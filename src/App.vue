@@ -13,6 +13,7 @@ const page = reactive({
   pageNumber: 1,
   disabledNext: false,
   disabledPrev: true,
+  empty: false,
 });
 const filters = reactive({
   selectStatus: "all",
@@ -63,8 +64,10 @@ const fetchItems = async () => {
     pageInfo.value.next
       ? (page.disabledNext = false)
       : (page.disabledNext = true);
+      page.empty=false;
   } catch (err) {
     error.value = "There is nothing here";
+    page.empty=true;
   } finally {
     filters.disabled = true;
   }
@@ -78,7 +81,7 @@ onMounted(fetchItems);
     :changeInput="changeInput"
     :fetchItems="fetchItems"
     :disabled="filters.disabled"
-  />
+     />
   <main>
     <h1>The Rick and Morty</h1>
     <p class="error" v-if="error">{{ error }}</p>
@@ -101,6 +104,7 @@ onMounted(fetchItems);
       :disabledNext="page.disabledNext"
       :disabledPrev="page.disabledPrev"
       :pageNumber="page.pageNumber"
+       :empty="page.empty"
     />
   </main>
 </template>
