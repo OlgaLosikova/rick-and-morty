@@ -2,7 +2,8 @@
 defineProps({
   changeSelect: Function,
   changeInput: Function,
-  fetchItems:Function
+  fetchItems:Function,
+  disabled:Boolean,
 });
 </script>
 
@@ -19,7 +20,7 @@ defineProps({
       <option value="dead">Dead</option>
       <option value="unknown">Unknown</option>
     </select>
-    <button @click="fetchItems">Применить</button>
+    <button :disabled="disabled" @click="fetchItems">Применить</button>
   </header>
 </template>
 

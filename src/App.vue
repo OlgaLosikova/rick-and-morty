@@ -3,34 +3,70 @@ import { onMounted, reactive, ref } from "vue";
 import axios from "axios";
 import Card from "./components/Card.vue";
 import Header from "./components/Header.vue";
+import PaginateCharacters from "./components/PaginateCharacters.vue";
 
 const baseUrl = "https://rickandmortyapi.com/api";
 const characters = ref([]);
 const error = ref(null);
+const pageInfo = reactive({});
+const page = reactive({
+  pageNumber: 1,
+  disabledNext: false,
+  disabledPrev: true,
+});
 const filters = reactive({
   selectStatus: "all",
   search: "",
+  disabled: true,
 });
 const changeSelect = (e) => {
   filters.selectStatus = e.target.value;
+  filters.disabled = false;
 };
 const changeInput = (e) => {
   filters.search = e.target.value;
+  filters.disabled = false;
+};
+const setNextPage = () => {
+  if (page.pageNumber < pageInfo.value.pages) {
+    page.pageNumber++;
+    fetchItems();
+  }
+};
+const setPrevPage = () => {
+  if (page.pageNumber > 1) {
+    page.pageNumber--;
+    fetchItems();
+  }
 };
 const fetchItems = async () => {
   try {
-    const params = {};
-    if (filters.selectStatus !== "all") {
-      params.status = `${filters.selectStatus}`;
-    }
-    if (filters.search) {
-      params.name = `${filters.search}`;
-    }
+    const params = { page: `${page.pageNumber}` };
+
+    filters.selectStatus !== "all" &&
+      (params.status = `${filters.selectStatus}`);
+    filters.search && (params.name = `${filters.search}`);
+
+    (params.status || params.name) &&
+      !filters.disabled &&
+      (params.page = 1) &&
+      (page.pageNumber = 1);
+
     const { data } = await axios.get(`${baseUrl}/character`, { params });
     characters.value = data.results;
-    error.value = null
+    error.value = null;
+    pageInfo.value = data.info;
+
+    pageInfo.value.prev
+      ? (page.disabledPrev = false)
+      : (page.disabledPrev = true);
+    pageInfo.value.next
+      ? (page.disabledNext = false)
+      : (page.disabledNext = true);
   } catch (err) {
     error.value = "There is nothing here";
+  } finally {
+    filters.disabled = true;
   }
 };
 onMounted(fetchItems);
@@ -41,6 +77,7 @@ onMounted(fetchItems);
     :changeSelect="changeSelect"
     :changeInput="changeInput"
     :fetchItems="fetchItems"
+    :disabled="filters.disabled"
   />
   <main>
     <h1>The Rick and Morty</h1>
@@ -58,6 +95,13 @@ onMounted(fetchItems);
         :imgUrl="character.image"
       />
     </section>
+    <PaginateCharacters
+      :setPrevPage="setPrevPage"
+      :setNextPage="setNextPage"
+      :disabledNext="page.disabledNext"
+      :disabledPrev="page.disabledPrev"
+      :pageNumber="page.pageNumber"
+    />
   </main>
 </template>
 
