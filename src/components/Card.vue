@@ -42,7 +42,7 @@ defineProps({
   height: 220px;
   overflow: hidden;
   padding-right: 1rem;
-}
+  }
 .card-image {
   border-radius: 10px 0 0 10px;
   padding-right: 1rem;

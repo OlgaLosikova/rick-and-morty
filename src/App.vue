@@ -113,13 +113,17 @@ onMounted(fetchItems);
 .card-wrapper {
   display: grid;
   gap: 2rem;
-  grid-template-columns: repeat(auto-fill, minmax(480px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
   justify-content: stretch;
   margin: 2.5rem;
-}
+ }
 .error {
   color: red;
   font-size: 2rem;
   text-align: center;
 }
+@media screen and (max-width: 600px) {
+  .card-wrapper {
+  margin: 1rem 0;
+ }}
 </style>
